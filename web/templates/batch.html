@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}批量处理 - CAD到Excel转换工具{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">批量文件处理</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">上传多个DWG图纸和工艺流程卡Excel文件，系统将自动处理并生成外委工序检验报告。</p>
+                    
+                    <form action="{{ url_for('batch_upload') }}" method="post" enctype="multipart/form-data" class="mb-4">
+                        <div class="mb-3">
+                            <label for="dwg_files" class="form-label fw-bold">DWG图纸文件 (多选)</label>
+                            <input type="file" class="form-control" id="dwg_files" name="dwg_files" accept=".dwg" multiple required>
+                            <div class="form-text">选择多个DWG文件，支持.dwg格式</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="excel_files" class="form-label fw-bold">工艺流程卡Excel文件 (多选)</label>
+                            <input type="file" class="form-control" id="excel_files" name="excel_files" accept=".xls,.xlsx" multiple required>
+                            <div class="form-text">选择多个Excel文件，支持.xls和.xlsx格式</div>
+                        </div>
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle"></i> 系统将根据文件名自动匹配DWG和Excel文件，请确保相关文件名相同或相似。
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> 开始批量处理
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if active_jobs %}
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">进行中的批处理任务</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>作业ID</th>
+                                    <th>创建时间</th>
+                                    <th>状态</th>
+                                    <th>进度</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job_id, job in active_jobs.items() %}
+                                <tr>
+                                    <td>{{ job.id[:8] }}...</td>
+                                    <td>{{ job.created }}</td>
+                                    <td>
+                                        {% if job.status == 'queued' %}
+                                            <span class="badge bg-secondary">排队中</span>
+                                        {% elif job.status == 'processing' %}
+                                            <span class="badge bg-primary">处理中</span>
+                                        {% elif job.status == 'failed' %}
+                                            <span class="badge bg-danger">失败</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                role="progressbar" 
+                                                style="width: {{ job.progress }}%;" 
+                                                aria-valuenow="{{ job.progress }}" 
+                                                aria-valuemin="0" 
+                                                aria-valuemax="100">{{ job.progress }}%</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('batch_status', job_id=job.id) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> 查看详情
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if completed_jobs %}
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">已完成的批处理任务</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>作业ID</th>
+                                    <th>完成时间</th>
+                                    <th>处理文件数</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job_id, job in completed_jobs.items() %}
+                                <tr>
+                                    <td>{{ job.id[:8] }}...</td>
+                                    <td>{{ job.completed }}</td>
+                                    <td>{{ job.processed_files }}/{{ job.total_files }}</td>
+                                    <td>
+                                        <span class="badge bg-success">完成</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('batch_status', job_id=job.id) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> 查看详情
+                                        </a>
+                                        {% if job.zip_file %}
+                                        <a href="{{ url_for('batch_download', job_id=job.id) }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-download"></i> 下载结果
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-4 mb-5">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> 返回单文件处理
+        </a>
+    </div>
+</div>
+{% endblock %} 

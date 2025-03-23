@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}外委工序检验报告生成工具{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        .header-wrapper {
+            background-color: #212529;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .logo-title {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .logo-title img {
+            height: 60px;
+            margin-right: 20px;
+        }
+        .logo-title h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.8rem;
+            white-space: nowrap;
+        }
+        .footer-text {
+            color: #9a9a9a;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-wrapper">
+        <div class="container">
+            <div class="logo-title">
+                <img src="{{ url_for('static', filename='img/hytems_logo.png') }}" alt="Logo">
+                <h1>华阳通 - 外委工序检验报告系统</h1>
+            </div>
+        </div>
+    </div>
+
+    <main class="container my-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-light py-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <p class="mb-0 footer-text"></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 
