@@ -61,41 +61,6 @@
         </div>
     </div>
 
-    <!-- 导航菜单 -->
-    <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded shadow-sm">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{{ url_for('index') }}">
-                                <i class="fas fa-home me-1"></i>首页
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/product' %}active{% endif %}" href="{{ url_for('product_intro') }}">
-                                <i class="fas fa-info-circle me-1"></i>产品介绍
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/batch' %}active{% endif %}" href="{{ url_for('batch_page') }}">
-                                <i class="fas fa-tasks me-1"></i>批量处理
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/convert' %}active{% endif %}" href="{{ url_for('convert_page') }}">
-                                <i class="fas fa-exchange-alt me-1"></i>DWG转换
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-
     <!-- 试用信息条带 -->
     <div class="container">
         <div id="trial-banner" class="trial-banner">
@@ -124,7 +89,7 @@
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    <p class="mb-0 footer-text"></p>
+                    <p class="mb-0 footer-text">深圳市多焕智能科技有限公司提供技术支持</p>
                 </div>
             </div>
         </div>
