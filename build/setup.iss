@@ -2,7 +2,7 @@
 ; 基本信息
 AppName=CADtoExcel
 AppVersion=1.0
-AppPublisher=华阳通智能装备有限公司
+AppPublisher=华阳通机电有限公司
 AppPublisherURL=http://www.yourcompany.com
 AppSupportURL=http://www.yourcompany.com/support
 AppUpdatesURL=http://www.yourcompany.com/updates
