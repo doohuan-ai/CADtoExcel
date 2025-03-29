@@ -27,3 +27,9 @@ et-xmlfile>=1.0.0
 
 # 重试模块
 tenacity>=9.0.0
+
+# 试用期限制相关依赖
+requests>=2.28.0  # HTTP请求库，用于获取网络时间
+py-cpuinfo>=9.0.0  # CPU信息获取
+uuid  # 内置库，无需安装
+pyinstaller>=5.7.0  # 用于打包为EXE

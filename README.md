@@ -1,23 +1,39 @@
-# CADtoExcel
+# AI智能CAD工艺数据解析系统
 
-CADtoExcel 是一个用于解析 CAD 文件（DWG格式）和 Excel 文件，并生成相应 JSON 格式数据以及外委工序检验报告的工具。
+<div align="center">
+  <img src="https://img.shields.io/badge/版本-1.0.0-blue.svg" alt="版本">
+  <img src="https://img.shields.io/badge/开发-深圳市多焕智能科技-brightgreen.svg" alt="开发">
+  <img src="https://img.shields.io/badge/客户-华阳通机电有限公司-orange.svg" alt="客户">
+</div>
 
-## 功能概述
+## 🚀 产品概述
 
-- 解析固定的外观要求对照表（maps/appearances.xlsx）
-- 解析任意 DWG 文件（CAD 图纸）
-- 解析任意 Excel 文件（xls 或 xlsx 格式）
-- 生成结构化的 JSON 输出
-- 生成外委工序检验报告
-- 提供Web界面，支持单文件和批量处理
-- 支持DWG文件转换为DXF格式
+**AI智能CAD工艺数据解析系统** 是一款基于人工智能技术的高级智能处理工具，专为工业制造企业打造。本系统利用先进的计算机视觉和数据分析算法，实现CAD图纸与工艺卡数据的智能化解析、匹配和报告生成，显著提升制造工艺流程的自动化水平和效率。
 
-## 环境要求
+### 核心智能功能
 
-- Python 3.6+
-- 依赖项已在 requirements.txt 中列出
+- **智能识别技术**：采用先进的计算机视觉算法自动识别和解析DWG格式CAD图纸
+- **智能匹配系统**：智能将CAD图纸与对应的Excel工艺数据进行自动匹配和关联
+- **智能批处理引擎**：支持批量文件的智能化自动处理，无需人工干预
+- **智能报告生成**：自动生成结构化的工序检验报告，符合工业标准要求
+- **智能文件转换**：内置智能格式转换引擎，实现DWG到DXF的无损转换
 
-## 安装
+## ✨ 主要特性
+
+- **多维度数据解析**：智能解析固定的外观要求对照表和动态工艺卡数据
+- **智能格式处理**：支持多种格式的智能处理，包括DWG、Excel(xls/xlsx)等
+- **结构化输出**：生成标准化JSON数据，便于系统集成和二次开发
+- **友好的Web界面**：直观的操作界面，支持拖放上传和进度实时显示
+- **高效批量处理**：内置智能匹配算法，一次处理多个文件对
+- **数据安全保障**：所有数据处理在本地完成，确保企业核心数据安全
+
+## 💻 系统要求
+
+- **操作系统**：Windows 10/11
+- **运行环境**：Python 3.6+
+- **依赖组件**：详见requirements.txt
+
+## 🔧 安装与部署
 
 ```bash
 # 克隆仓库
@@ -26,28 +42,25 @@ cd CADtoExcel
 
 # 创建虚拟环境
 python -m venv env
-source env/bin/activate  # 在Windows上使用: env\Scripts\activate
+env\Scripts\activate  # Windows系统
 
 # 安装依赖
 pip install -r requirements.txt
-```
 
-## 使用方法
-
-### Web界面（推荐）
-
-启动Web应用：
-
-```bash
+# 启动应用
 python app.py
 ```
 
-然后在浏览器中访问：`http://localhost:5000`
+## 📊 使用方法
 
-Web界面提供三种处理方式：
-1. **单文件处理** - 上传单个DWG文件和Excel文件进行处理
-2. **批量处理** - 一次上传多个DWG文件和Excel文件，系统自动匹配并处理
-3. **DWG转DXF** - 将AutoCAD的DWG文件格式转换为更通用的DXF格式
+### Web智能界面（推荐）
+
+启动Web应用后，在浏览器中访问：`http://localhost:5000`
+
+Web界面提供三种智能处理模式：
+1. **单文件智能处理** - 上传单个DWG文件和Excel文件进行智能匹配和处理
+2. **批量智能处理** - 一次上传多个DWG文件和Excel文件，系统自动匹配并智能处理
+3. **智能格式转换** - 利用智能算法将AutoCAD的DWG文件转换为更通用的DXF格式
 
 ### 命令行调用
 
@@ -55,163 +68,30 @@ Web界面提供三种处理方式：
 python src/cli.py --dwg <DWG文件路径> --excel <Excel文件路径> --output <输出目录>
 ```
 
-例如：
+## 🔄 智能处理流程
 
-```bash
-python src/cli.py --dwg test/81206851-03.dwg --excel test/81206851-03.xls --output outputs
-```
+1. **数据导入**：上传CAD图纸和工艺卡Excel文件
+2. **智能解析**：系统自动解析图纸中的实体信息和Excel中的工艺数据
+3. **智能匹配**：通过智能算法匹配图纸和工艺数据的对应关系
+4. **智能生成**：自动生成标准化的工序检验报告
+5. **数据导出**：提供JSON格式的结构化数据和Excel格式的报告文件
 
-### 作为库调用
+## 📁 输出文件说明
 
-```python
-from src.main import process_files
+系统会在指定的输出目录智能生成以下文件：
 
-# 处理文件并获取输出路径
-output_files = process_files('test/81206851-03.dwg', 'test/81206851-03.xls', 'outputs')
-```
+1. `<basename>_dwg.json` - DWG文件智能解析结果
+2. `<basename>_excel.json` - Excel文件智能解析结果
+3. `<basename>_report.xlsx` - 智能生成的外委工序检验报告
+4. `<basename>.dxf` - 智能转换的DXF文件（使用转换功能时）
+5. 批量处理报告打包 `batch_<job_id>_reports.zip`
 
-## 批量处理功能
+## 📞 联系与支持
 
-批量处理功能可以一次性处理多个DWG和Excel文件对，特别适合于需要处理大量文件的场景。
+- **开发方**：深圳市多焕智能科技有限公司
+- **联系电话**：18689628301
+- **电子邮箱**：reef@doohuan.com
 
-### 工作流程：
+## 📄 许可说明
 
-1. 用户上传多个DWG文件和Excel文件
-2. 系统根据文件名自动匹配相应的DWG和Excel文件对
-3. 系统在后台处理每一对文件，生成各自的报告
-4. 所有报告会打包成一个ZIP文件供用户下载
-
-### 匹配规则：
-
-系统会自动查找名称相同或相似的DWG和Excel文件进行匹配。例如：
-- `81206851-03.dwg` 会与 `81206851-03.xlsx` 匹配
-- `ABC部件.dwg` 会与 `ABC部件工艺卡.xlsx` 匹配（包含关系）
-
-### 状态跟踪：
-
-批量处理过程中，用户可以看到：
-- 总任务进度
-- 已成功处理的文件数量
-- 处理失败的文件数量
-- 详细的处理日志
-
-## 输出文件
-
-程序会在指定的输出目录生成以下文件：
-
-1. `<basename>_dwg.json` - DWG 文件解析结果
-2. `<basename>_dwg_raw_data.json` - DWG 文件解析的原始数据
-3. `<basename>_excel.json` - Excel 文件解析结果（包含工序信息）
-4. `<basename>_report.xlsx` - 外委工序检验报告Excel文件
-5. `<basename>.dxf` - 从DWG转换的DXF文件（使用转换功能时）
-6. 批量处理时会生成 `batch_<job_id>_reports.zip` 包含所有报告
-
-## 目录结构
-
-项目使用以下目录结构：
-
-- `uploads/` - 存放用户上传的原始文件
-- `outputs/` - 存放所有处理结果
-  - `outputs/temp/` - 临时处理目录
-- `maps/` - 存放配置文件和模板
-  - `maps/appearance_map.json` - 外观要求对照表
-  - `maps/thickness_map.json` - 板厚公差对照表
-  - `maps/report_map.xlsx` - 报告模板文件
-
-## 数据格式
-
-### 外观要求对照表 (appearance_map.json)
-
-```json
-{
-  "工序名1": [
-    {"id": 1, "description": "外观要求描述1"},
-    {"id": 2, "description": "外观要求描述2"}
-  ],
-  "工序名2": [
-    {"id": 1, "description": "外观要求描述1"}
-  ]
-}
-```
-
-### DWG 数据 (<basename>_dwg.json)
-
-```json
-{
-  "file_name": "文件名.dwg",
-  "metadata": {
-    "version": "DXF版本",
-    "header_variables": {}
-  },
-  "entities": {
-    "lines": [],
-    "circles": [],
-    "arcs": [],
-    "texts": [],
-    "polylines": [],
-    "blocks": [],
-    "dimensions": [],
-    "other": []
-  },
-  "layers": []
-}
-```
-
-### Excel 数据 (<basename>_excel.json)
-
-```json
-{
-  "file_name": "文件名.xls",
-  "sheets": [
-    {
-      "name": "工作表名",
-      "headers": ["列标题1", "列标题2"],
-      "data": [
-        {"列标题1": "值1", "列标题2": "值2"},
-        {"列标题1": "值3", "列标题2": "值4"}
-      ]
-    }
-  ]
-}
-```
-
-## 开发者信息
-
-- 作者：[您的姓名]
-- 联系方式：[您的联系方式]
-
-## 许可证
-
-MIT
-
-## DWG转DXF功能
-
-系统提供了将AutoCAD的DWG文件转换为更通用的DXF格式的功能：
-
-### Web界面操作流程
-
-1. 在首页点击"转换DWG"按钮或直接访问`/convert`路径
-2. 上传DWG文件（支持拖放上传）
-3. 点击"转换为DXF"按钮
-4. 等待转换完成后下载DXF文件
-
-### 命令行使用
-
-```bash
-python src/cli.py --convert-dwg <DWG文件路径> --output <输出目录>
-```
-
-### 作为库调用
-
-```python
-from src.dwg_parser import convert_dwg_to_dxf
-
-# 转换DWG文件为DXF
-dxf_file_path = convert_dwg_to_dxf('test/drawing.dwg', 'outputs/drawing.dxf')
-```
-
-### 注意事项
-
-- 转换过程依赖于LibreDWG工具集中的`dwg2dxf`命令
-- 转换结果将保留7天，请及时下载
-- 当前支持的最大文件大小为100MB
+本软件为试用版，试用期为3天。如需完整版，请联系我们获取商业授权。
