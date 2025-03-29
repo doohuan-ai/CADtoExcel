@@ -686,7 +686,7 @@ def generate_template_report(dwg_file: str, excel_file: str, appearance_map_file
         # 获取DWG文件名并生成输出文件名
         dwg_file_name = dwg_data.get('file_name', '')
         base_name = os.path.splitext(dwg_file_name)[0]
-        output_file = os.path.join(output_dir, f"{base_name}_report.xlsx")
+        output_file = os.path.join(output_dir, f"{base_name}-QC.xlsx")
 
         # 首先复制模板文件创建报告
         logger.info(f"复制模板文件 {template_file} 到 {output_file}")

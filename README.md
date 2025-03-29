@@ -82,7 +82,7 @@ python src/cli.py --dwg <DWG文件路径> --excel <Excel文件路径> --output <
 
 1. `<basename>_dwg.json` - DWG文件智能解析结果
 2. `<basename>_excel.json` - Excel文件智能解析结果
-3. `<basename>_report.xlsx` - 智能生成的外委工序检验报告
+3. `<basename>-QC.xlsx` - 智能生成的外委工序检验报告
 4. `<basename>.dxf` - 智能转换的DXF文件（使用转换功能时）
 5. 批量处理报告打包 `batch_<job_id>_reports.zip`
 
