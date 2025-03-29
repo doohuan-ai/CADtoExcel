@@ -23,6 +23,14 @@
             line-height: 1.6;
         }
         
+        .header-logo {
+            background-color: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
         .hero-section {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
@@ -191,6 +199,18 @@
     </style>
 </head>
 <body>
+    <!-- 页眉Logo -->
+    <div class="header-logo">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/">
+                    <img src="/static/assets/doohuan_logo.png" alt="多焕智能" height="50">
+                </a>
+                <a href="/" class="btn btn-outline-primary">返回主页</a>
+            </div>
+        </div>
+    </div>
+    
     <!-- 头部英雄区 -->
     <section class="hero-section">
         <div class="container hero-content">
@@ -442,7 +462,28 @@
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 text-center">
                     <img src="/static/assets/qr_code.png" class="img-fluid shadow-lg rounded mb-4" style="max-width: 200px;" alt="联系我们二维码">
-                    <p class="mt-4 mb-0 text-white-50">© 2025 深圳市多焕智能科技有限公司. 保留所有权利.</p>
+                    <div class="mb-4 text-start">
+                        <div class="d-flex align-items-center mb-3 justify-content-center">
+                            <i class="bi bi-building me-3 text-white"></i>
+                            <span>深圳市多焕智能科技有限公司</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3 justify-content-center">
+                            <i class="bi bi-telephone me-3 text-white"></i>
+                            <span>18689628301</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-envelope me-3 text-white"></i>
+                            <span>reef@doohuan.com</span>
+                        </div>
+                    </div>
+                    <a href="mailto:reef@doohuan.com" class="btn btn-gradient btn-lg">联系我们</a>
+                    
+                    <div class="mt-5 pt-4 border-top border-light opacity-25">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img src="/static/assets/doohuan_logo.png" alt="多焕智能" height="40" class="me-3">
+                            <p class="mb-0 text-white-50">© 2025 深圳市多焕智能科技有限公司. 保留所有权利.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
