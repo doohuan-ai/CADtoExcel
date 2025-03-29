@@ -5,20 +5,24 @@ import time
 import os
 import logging
 from dataclasses import dataclass
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_fixed,
+    retry_if_result)
 
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d- %(message)s',
-    handlers=[logging.FileHandler('conversion.log'), logging.StreamHandler()]
 )
 
 
 @dataclass
 class CADConfig:
-    printer_name: str = "PublishToWeb PNG (Transparent).pc3"  # 白底：PublishToWeb PNG (Transparent).pc3
-    media_name: str = '5K_(5120.00_x_2880.00_Pixels)'  # 打印尺寸
-    style_sheet: str = 'acad.ctb'  # 黑白：mochrome.ctb
+    printer_name: str = "PublishToWeb PNG (Transparent).pc3"  # 透明背景
+    media_name: str = "FHD_(1920.00_x_1080.00_Pixels)"  # 打印尺寸
+    style_sheet: str = "acad.ctb"  # 黑白：mochrome.ctb
     plot_rotation: int = 0
     plot_scale: int = 0
     plot_with_lineweights: bool = True  # 打印线宽
@@ -85,6 +89,7 @@ class CADExporter:
         # 必要参数设置
         self.doc.SetVariable('BACKGROUNDPLOT', 0)
 
+
     def export_image(self, output_dir):
         """执行导出操作"""
         base_name = os.path.splitext(self.doc.Name)[0]
@@ -121,7 +126,14 @@ class CADExporter:
         except Exception as e:
             logging.error(f"资源关闭异常: {str(e)}")
 
+def retry_if_result_false(value):
+    return value is False
 
+
+@retry(stop=stop_after_attempt(2),
+       wait=wait_fixed(5),
+       retry=retry_if_result(retry_if_result_false),
+       reraise=True)
 def process_dwg(file_path, output_dir, config=CADConfig()):
     """单文件导出函数（供进程池调用）"""
     try:
@@ -134,10 +146,3 @@ def process_dwg(file_path, output_dir, config=CADConfig()):
     except Exception as e:
         logging.error(f"处理失败 [{file_path}]: {str(e)}")
         return False
-
-
-if __name__ == "__main__":
-    # 测试
-    dwg_path = r"D:\WorkSpace\AI\CADtoExcel\test\82202397.dwg"
-    output_dir = r"D:\WorkSpace\AI\CADtoExcel\outputs"
-    process_dwg(dwg_path, output_dir)

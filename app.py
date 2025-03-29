@@ -13,4 +13,4 @@ from src.web import app
 if __name__ == '__main__':
     # 在生产环境中应使用WSGI服务器（如gunicorn或uwsgi）
     # 这里仅为开发环境使用
-    app.run(host='0.0.0.0', port=5000, debug=True) 
+    app.run(host='0.0.0.0', port=5000, debug=True)
