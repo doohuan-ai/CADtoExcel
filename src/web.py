@@ -79,6 +79,11 @@ def index():
     """主页"""
     return render_template('index.html')
 
+@app.route('/product')
+def product_intro():
+    """产品介绍页面"""
+    return render_template('product_intro.html')
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """处理单个文件上传"""
