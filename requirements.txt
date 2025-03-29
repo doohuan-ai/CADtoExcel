@@ -25,3 +25,5 @@ pytest>=6.0.0
 et-xmlfile>=1.0.0
 # LibreDWG需要单独安装，不能通过pip安装 
 
+# 重试模块
+tenacity>=9.0.0
