@@ -30,7 +30,7 @@ Name: "quicklaunchicon"; Description: "创建快速启动栏图标"; GroupDescri
 
 [Files]
 ; 主程序
-Source: "..\dist\app.exe"; DestDir: "{app}"; DestName: "CADtoExcel.exe"; Flags: ignoreversion
+Source: "..\dist\CADtoExcel.exe"; DestDir: "{app}"; DestName: "CADtoExcel.exe"; Flags: ignoreversion
 
 ; 资源文件
 Source: "..\maps\*"; DestDir: "{app}\maps"; Flags: ignoreversion recursesubdirs createallsubdirs

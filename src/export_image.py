@@ -130,7 +130,7 @@ def retry_if_result_false(value):
     return value is False
 
 
-@retry(stop=stop_after_attempt(2),
+@retry(stop=stop_after_attempt(3),
        wait=wait_fixed(5),
        retry=retry_if_result(retry_if_result_false),
        reraise=True)

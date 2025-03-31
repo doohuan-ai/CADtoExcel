@@ -167,9 +167,25 @@ def trial_status():
     return jsonify({'valid': valid, 'message': message})
 
 if __name__ == '__main__':
+    # 解决Pyinstaller环境下运行无限制创建线程
+    if sys.platform.startswith('win'):
+        from multiprocessing import freeze_support
+        freeze_support()
+
+    try:
+        from win32event import CreateMutex
+        from win32api import GetLastError
+        from winerror import ERROR_ALREADY_EXISTS
+
+        mutex = CreateMutex(None, False, "Global\\CADtoExcel")
+        if GetLastError() == ERROR_ALREADY_EXISTS:
+            sys.exit("程序已在运行中")
+    except ImportError:
+        pass  # 非Windows系统跳过
+
     # 检查试用期状态
     valid, message = check_trial()
-    
+
     if not valid:
         # 创建并显示试用结束页面
         html_content = f"""
@@ -202,29 +218,31 @@ if __name__ == '__main__':
         </body>
         </html>
         """
-        
+
         # 创建一个临时HTML文件
         if os.name == 'nt':  # Windows
             temp_dir = os.path.join(os.getenv('TEMP', os.path.expanduser('~/temp')), 'CADtoExcel')
         else:  # Linux/macOS
             temp_dir = os.path.join('/tmp', 'CADtoExcel')
-        
+
         os.makedirs(temp_dir, exist_ok=True)
         html_path = os.path.join(temp_dir, 'trial_ended.html')
-        
+
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
-        
+
         # 打开浏览器显示试用期结束页面
         webbrowser.open('file://' + html_path)
-        
+
         print(message)
         input("按Enter键退出...")
+
         sys.exit(0)
-    
+
     # 如果试用期有效，显示剩余时间并继续启动应用
     print(f"CADtoExcel - {message}")
-    
+
     # 在生产环境中应使用WSGI服务器（如gunicorn或uwsgi）
     # 这里仅为开发环境使用
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    # app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False, use_reloader=False, threaded=True)

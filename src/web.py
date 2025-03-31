@@ -47,6 +47,36 @@ ALLOWED_EXTENSIONS_EXCEL = {'xls', 'xlsx'}
 OUTPUT_FOLDER = os.path.join(ROOT_DIR, 'outputs')
 TEMP_FOLDER = os.path.join(ROOT_DIR, 'outputs', 'temp')  # 临时存储批处理任务文件
 
+
+def get_mei_dir() -> str:
+    """动态获取 PyInstaller 解压目录（_MEIxxxxxx）"""
+    decom_dir = os.environ.get('TEMP') or os.getcwd()
+    if not hasattr(sys, '_MEIPASS'):
+        mei_dirs = [
+            d for d in os.listdir(decom_dir)
+            if d.startswith('_MEI') and os.path.isdir(os.path.join(decom_dir, d))
+        ]
+
+        if not mei_dirs:
+            raise FileNotFoundError("PyInstaller 解压目录未找到 (_MEI*)")
+
+        # 按创建时间排序（取最新目录）
+        mei_dirs_sorted = sorted(
+            mei_dirs,
+            key=lambda x: os.path.getctime(os.path.join(decom_dir, x)),
+            reverse=True
+        )
+        return os.path.join(decom_dir, mei_dirs_sorted[0])
+
+    return os.path.join(decom_dir, str(sys._MEIPASS))
+
+
+if getattr(sys, 'frozen', False):
+    # PyInstaller打包后的临时目录
+    UPLOAD_FOLDER = os.path.join(get_mei_dir(), 'uploads')
+    OUTPUT_FOLDER = os.path.join(get_mei_dir(), 'outputs')
+    TEMP_FOLDER = os.path.join(get_mei_dir(), 'outputs', 'temp')
+
 # 确保目录存在
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -191,6 +221,7 @@ def batch_upload():
             filename = secure_filename(dwg_file.filename)
             file_path = os.path.join(dwg_folder, filename)
             dwg_file.save(file_path)
+            logger.info(f"====>保存DWG文件: {file_path}")
             dwg_filenames.append(filename)
     
     # 保存Excel文件

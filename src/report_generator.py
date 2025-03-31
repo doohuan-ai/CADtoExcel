@@ -14,6 +14,7 @@ import xlrd
 import re
 from copy import copy
 import openpyxl.styles
+from src.web import OUTPUT_FOLDER, TEMP_FOLDER, UPLOAD_FOLDER
 
 # 确保日志目录存在
 logs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
@@ -692,24 +693,27 @@ def generate_template_report(dwg_file: str, excel_file: str, appearance_map_file
         logger.info(f"复制模板文件 {template_file} 到 {output_file}")
         shutil.copy2(template_file, output_file)
 
-        # 处理DWG转换和图像插入
-        dxf_path = os.path.join('outputs', f"{base_name}.dxf")
-        if not os.path.exists(dxf_path):
-            # 从原始Excel文件路径中提取任务ID
+        def get_task_id(file_path):
             task_id = None
-            if original_excel_file:
+            if file_path:
                 # 从路径中提取任务ID
-                path_parts = original_excel_file.split(os.sep)
+                path_parts = file_path.split(os.sep)
                 for part in path_parts:
                     if len(part) == 36 and '-' in part:  # UUID格式
                         task_id = part
                         break
+            return task_id
+        # 处理DWG转换和图像插入
+        dxf_path = os.path.join('outputs', f"{base_name}.dxf")
+        if not os.path.exists(dxf_path):
+            # 从原始Excel文件路径中提取任务ID
 
+            task_id = get_task_id(original_excel_file)
             # 构建正确的DWG文件路径
             if task_id:
-                dwg_path = os.path.join('uploads', task_id, dwg_file_name)
+                dwg_path = os.path.join(UPLOAD_FOLDER, task_id, dwg_file_name)
             else:
-                dwg_path = os.path.join('uploads', dwg_file_name)
+                dwg_path = os.path.join(UPLOAD_FOLDER, dwg_file_name)
 
             from src.dwg_parser import convert_dwg_to_dxf
             dxf_path = convert_dwg_to_dxf(dwg_path, dxf_path)
@@ -719,16 +723,19 @@ def generate_template_report(dwg_file: str, excel_file: str, appearance_map_file
             # from src.dxf_to_image import convert_dxf_to_image
             # image_path = os.path.join('outputs', f"{base_name}.png")
             # image_path = convert_dxf_to_image(dxf_path, image_path)
-            filename = os.path.basename(dxf_path)
-            _dwg_file = filename.rsplit(".", 1)[0] + ".dwg"
-            project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            test_file_dir = [os.path.join(project_dir, 'test')]
-            input_file = os.path.join(test_file_dir[0], _dwg_file)
 
             from src.export_image import process_dwg
-            retval = process_dwg(input_file, os.path.join(project_dir, "outputs"))
-            image_path = os.path.join('outputs', f"{base_name}.png")
-            if retval and os.path.exists(image_path):
+            dxf_filename = os.path.basename(dxf_path)
+            dwg_filename = dxf_filename.rsplit(".", 1)[0]
+            task_id = get_task_id(original_excel_file)
+            dwg_file_path = os.path.join(TEMP_FOLDER, task_id, "dwg") + "/" + dwg_filename + ".dwg"
+            if not os.path.exists(dwg_file_path):
+                dwg_file_path = os.path.join(UPLOAD_FOLDER, task_id) + "/" + dwg_filename + ".dwg"
+
+            logger.info(f"转换为DWG文件:{dxf_path} => {dwg_file_path}")
+            result = process_dwg(dwg_file_path, OUTPUT_FOLDER)
+            image_path = os.path.join(OUTPUT_FOLDER, f"{base_name}.png")
+            if result and os.path.exists(image_path):
                 # 将图像插入到报告中
                 insert_drawing_image(output_file, image_path)
 
