@@ -586,7 +586,14 @@ def convert_upload():
     except Exception as e:
         logger.error(f"处理DWG转DXF时出错: {str(e)}")
         logger.error(traceback.format_exc())
-        flash(f'处理失败: {str(e)}')
+        
+        # 特别处理试用次数用完的情况
+        error_message = str(e)
+        if "试用次数已用完" in error_message:
+            flash('本软件试用次数已用完，请联系供应商购买完整版')
+        else:
+            flash(f'处理失败: {error_message}')
+        
         return redirect(url_for('convert_page'))
 
 @app.route('/convert/result')
@@ -608,7 +615,7 @@ def download_dxf(session_id, filename):
         flash('文件不存在或已过期')
         return redirect(url_for('convert_page'))
     
-    return send_from_directory(output_folder, filename, as_attachment=True)
+    return send_from_directory(output_folder, filename, as_attachment=True, download_name=filename)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001) 

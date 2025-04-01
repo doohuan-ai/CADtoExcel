@@ -717,6 +717,27 @@ def convert_dwg_to_dxf(dwg_file_path: str, output_path: str = None) -> str:
     Returns:
         str: 转换后的DXF文件路径，转换失败则返回None
     """
+    # 先检查试用次数
+    try:
+        # 导入试用检查函数
+        from utils.trial_manager import increment_dwg_to_dxf_usage
+        
+        # 增加使用次数并检查是否可以继续使用
+        can_use, message, usage_count, remaining = increment_dwg_to_dxf_usage()
+        
+        if not can_use:
+            logger.error(f"功能无法使用: {message}")
+            logger.info(f"已使用{usage_count}次，试用版限制为15次")
+            raise RuntimeError(f"本软件试用次数已用完，请联系供应商购买完整版。")
+            
+        logger.info(f"功能使用计数: {usage_count}/{usage_count+remaining}")
+    except ImportError as e:
+        logger.warning(f"无法导入试用检查模块，跳过试用检查: {e}")
+    except Exception as e:
+        logger.error(f"试用检查出错: {e}")
+        if "试用次数已用完" in str(e):
+            raise RuntimeError(f"本软件试用次数已用完。请联系供应商购买完整版。")
+
     # 检查文件是否存在
     if not os.path.exists(dwg_file_path):
         logger.error(f"DWG文件不存在: {dwg_file_path}")
