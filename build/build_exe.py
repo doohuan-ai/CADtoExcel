@@ -112,8 +112,8 @@ def main():
         
         # 构建EXE
         build_exe()
-        
-        # 构建安装程序
+        #
+        # # 构建安装程序
         build_installer()
         
         print("\n===== 打包成功 =====")
