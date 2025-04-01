@@ -3,117 +3,113 @@
 {% block title %}CAD转Excel处理系统 - 文件上传{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <!-- 产品介绍推广 -->
-        <div class="card shadow mb-4 border-0" style="border-radius: 15px; overflow: hidden;">
-            <div class="card-body text-center bg-gradient-primary py-5" style="background: linear-gradient(135deg, #1e88e5, #5e35b1); border: none;">
-                <h3 class="mb-3 text-white fw-bold">想了解更多AI智能CAD工艺数据解析系统？</h3>
-                <p class="lead mb-4 text-white">查看我们的详细产品介绍</p>
-                <a href="{{ url_for('product_intro') }}" class="btn btn-light btn-lg px-5 shadow-lg" style="border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">
-                    <i class="fas fa-info-circle me-2"></i>查看产品介绍
+<!-- 产品介绍推广 -->
+<div class="card shadow mb-4 border-0" style="border-radius: 15px; overflow: hidden;">
+    <div class="card-body text-center bg-gradient-primary py-5" style="background: linear-gradient(135deg, #1e88e5, #5e35b1); border: none;">
+        <h3 class="mb-3 text-white fw-bold">想了解更多AI智能CAD工艺数据解析系统？</h3>
+        <p class="lead mb-4 text-white">查看我们的详细产品介绍</p>
+        <a href="{{ url_for('product_intro') }}" class="btn btn-light btn-lg px-5 shadow-lg" style="border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">
+            <i class="fas fa-info-circle me-2"></i>查看产品介绍
+        </a>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h2 class="h4 mb-0">单文件处理</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data" id="upload-form">
+            <div class="mb-4">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>说明：</strong>请上传DWG文件和Excel工艺流程卡文件，系统将自动解析并生成外委工序检验报告。
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dwg_file" class="form-label fw-bold">
+                            <i class="fas fa-file-alt me-1"></i>DWG文件
+                        </label>
+                        <input type="file" class="form-control" id="dwg_file" name="dwg_file" accept=".dwg" required>
+                        <div class="form-text">选择一个DWG格式的CAD图纸文件</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="excel_file" class="form-label fw-bold">
+                            <i class="fas fa-file-excel me-1"></i>Excel工艺流程卡
+                        </label>
+                        <input type="file" class="form-control" id="excel_file" name="excel_file" accept=".xls,.xlsx" required>
+                        <div class="form-text">选择一个Excel格式的工艺流程卡文件</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5" id="submit-btn">
+                        <i class="fas fa-upload me-2"></i>开始处理
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 批量处理推荐 -->
+<div class="card shadow mt-4 mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h3 class="h5 mb-0"><i class="fas fa-tasks me-2"></i>需要处理多个文件？</h3>
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <p class="mb-0">如果您需要同时处理多个DWG和Excel文件，可以使用批量处理功能。批量处理可以一次性上传多个文件，系统将自动匹配并处理，最后生成ZIP格式的结果包。</p>
+            </div>
+            <div class="ms-3">
+                <a href="{{ url_for('batch_page') }}" class="btn btn-warning" style="white-space: nowrap;">
+                    <i class="fas fa-arrow-right me-1"></i>批量处理
                 </a>
             </div>
         </div>
-        
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h2 class="h4 mb-0">单文件处理</h2>
+    </div>
+</div>
+
+<!-- DWG转DXF功能 -->
+<div class="card shadow mt-4 mb-4">
+    <div class="card-header bg-info text-white">
+        <h3 class="h5 mb-0"><i class="fas fa-exchange-alt me-2"></i>DWG转DXF格式</h3>
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <p class="mb-0">需要将AutoCAD的DWG文件转换为更通用的DXF格式？使用我们的转换工具，快速将DWG文件转换为DXF格式，便于在各种CAD软件中打开和编辑。</p>
             </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data" id="upload-form">
-                    <div class="mb-4">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>说明：</strong>请上传DWG文件和Excel工艺流程卡文件，系统将自动解析并生成外委工序检验报告。
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="dwg_file" class="form-label fw-bold">
-                                    <i class="fas fa-file-alt me-1"></i>DWG文件
-                                </label>
-                                <input type="file" class="form-control" id="dwg_file" name="dwg_file" accept=".dwg" required>
-                                <div class="form-text">选择一个DWG格式的CAD图纸文件</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="excel_file" class="form-label fw-bold">
-                                    <i class="fas fa-file-excel me-1"></i>Excel工艺流程卡
-                                </label>
-                                <input type="file" class="form-control" id="excel_file" name="excel_file" accept=".xls,.xlsx" required>
-                                <div class="form-text">选择一个Excel格式的工艺流程卡文件</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submit-btn">
-                                <i class="fas fa-upload me-2"></i>开始处理
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div class="ms-3">
+                <a href="{{ url_for('convert_page') }}" class="btn btn-info text-white" style="white-space: nowrap;">
+                    <i class="fas fa-file-export me-1"></i>转换DWG
+                </a>
             </div>
         </div>
-        
-        <!-- 批量处理推荐 -->
-        <div class="card shadow mt-4 mb-4">
-            <div class="card-header bg-warning text-dark">
-                <h3 class="h5 mb-0"><i class="fas fa-tasks me-2"></i>需要处理多个文件？</h3>
-            </div>
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <p class="mb-0">如果您需要同时处理多个DWG和Excel文件，可以使用批量处理功能。批量处理可以一次性上传多个文件，系统将自动匹配并处理，最后生成ZIP格式的结果包。</p>
-                    </div>
-                    <div class="ms-3">
-                        <a href="{{ url_for('batch_page') }}" class="btn btn-warning" style="white-space: nowrap;">
-                            <i class="fas fa-arrow-right me-1"></i>批量处理
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- DWG转DXF功能 -->
-        <div class="card shadow mt-4 mb-4">
-            <div class="card-header bg-info text-white">
-                <h3 class="h5 mb-0"><i class="fas fa-exchange-alt me-2"></i>DWG转DXF格式</h3>
-            </div>
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <p class="mb-0">需要将AutoCAD的DWG文件转换为更通用的DXF格式？使用我们的转换工具，快速将DWG文件转换为DXF格式，便于在各种CAD软件中打开和编辑。</p>
-                    </div>
-                    <div class="ms-3">
-                        <a href="{{ url_for('convert_page') }}" class="btn btn-info text-white" style="white-space: nowrap;">
-                            <i class="fas fa-file-export me-1"></i>转换DWG
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 使用说明 -->
-        <div class="card shadow">
-            <div class="card-header bg-light">
-                <h3 class="h5 mb-0">使用说明</h3>
-            </div>
-            <div class="card-body">
-                <ol class="mb-0">
-                    <li>上传DWG格式的CAD图纸文件</li>
-                    <li>上传XLS/XLSX格式的工艺流程卡文件</li>
-                    <li>点击"开始处理"按钮</li>
-                    <li>系统将解析文件并生成外委工序检验报告</li>
-                    <li>处理完成后，您可以下载生成的报告</li>
-                </ol>
-            </div>
-        </div>
+    </div>
+</div>
+
+<!-- 使用说明 -->
+<div class="card shadow">
+    <div class="card-header bg-light">
+        <h3 class="h5 mb-0">使用说明</h3>
+    </div>
+    <div class="card-body">
+        <ol class="mb-0">
+            <li>上传DWG格式的CAD图纸文件</li>
+            <li>上传XLS/XLSX格式的工艺流程卡文件</li>
+            <li>点击"开始处理"按钮</li>
+            <li>系统将解析文件并生成外委工序检验报告</li>
+            <li>处理完成后，您可以下载生成的报告</li>
+        </ol>
     </div>
 </div>
 {% endblock %}

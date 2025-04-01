@@ -1,189 +1,168 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DWG转DXF格式 - CAD文件转换工具</title>
-    <!-- 引入Bootstrap CSS -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .upload-box {
-            border: 2px dashed #ccc;
-            border-radius: 5px;
-            padding: 30px;
-            text-align: center;
-            background-color: #f8f9fa;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-        .upload-box:hover {
-            border-color: #0d6efd;
-            background-color: #f1f3f5;
-        }
-        .file-icon {
-            font-size: 48px;
-            color: #0d6efd;
-            margin-bottom: 10px;
-        }
-        .help-text {
-            font-size: 14px;
-            color: #6c757d;
-            margin-top: 10px;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">DWG转DXF格式</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- 显示消息 -->
-                        {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                        <div class="alert alert-warning" role="alert">
-                            {% for message in messages %}
-                            {{ message }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        {% endwith %}
+{% extends "base.html" %}
 
-                        <p class="card-text">
-                            将AutoCAD的DWG文件格式转换为更通用的DXF格式，便于在其他CAD软件中打开和编辑。
-                        </p>
+{% block title %}DWG转DXF格式 - CAD文件转换工具{% endblock %}
 
-                        <form action="{{ url_for('convert_upload') }}" method="post" enctype="multipart/form-data" id="uploadForm">
-                            <div class="upload-box" id="dropZone">
-                                <div class="file-icon">
-                                    <i class="bi bi-file-earmark-arrow-up"></i>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
-                                        <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"/>
-                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-                                    </svg>
-                                </div>
-                                <h5>拖放文件到这里或点击选择文件</h5>
-                                <p class="help-text">支持的文件格式: .dwg</p>
-                                <input type="file" name="dwg_file" id="dwgFile" class="hidden" accept=".dwg">
-                            </div>
+{% block extra_css %}
+<style>
+    .upload-box {
+        border: 2px dashed #ccc;
+        border-radius: 5px;
+        padding: 30px;
+        text-align: center;
+        background-color: #f8f9fa;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+    .upload-box:hover {
+        border-color: #0d6efd;
+        background-color: #f1f3f5;
+    }
+    .file-icon {
+        font-size: 48px;
+        color: #0d6efd;
+        margin-bottom: 10px;
+    }
+    .help-text {
+        font-size: 14px;
+        color: #6c757d;
+        margin-top: 10px;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
 
-                            <div class="selected-file mb-3 hidden" id="selectedFileBox">
-                                <div class="alert alert-info">
-                                    已选择文件: <span id="selectedFileName"></span>
-                                    <button type="button" class="btn-close float-end" id="removeFile"></button>
-                                </div>
-                            </div>
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">DWG转DXF格式</h3>
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            将AutoCAD的DWG文件格式转换为更通用的DXF格式，便于在其他CAD软件中打开和编辑。
+        </p>
 
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary" id="convertBtn" disabled>
-                                    转换为DXF
-                                </button>
-                                <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>使用说明:</h5>
-                                <ul class="small">
-                                    <li>上传一个DWG格式的CAD文件</li>
-                                    <li>点击"转换为DXF"按钮</li>
-                                    <li>转换完成后下载DXF文件</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <h5>注意事项:</h5>
-                                <ul class="small">
-                                    <li>单个文件大小不超过100MB</li>
-                                    <li>转换结果保留7天，请及时下载</li>
-                                    <li>转换过程完全在服务器端进行，保证数据安全</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+        <form action="{{ url_for('convert_upload') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-box" id="dropZone">
+                <div class="file-icon">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                        <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"/>
+                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                    </svg>
                 </div>
+                <h5>拖放文件到这里或点击选择文件</h5>
+                <p class="help-text">支持的文件格式: .dwg</p>
+                <input type="file" name="dwg_file" id="dwgFile" class="hidden" accept=".dwg">
+            </div>
+
+            <div class="selected-file mb-3 hidden" id="selectedFileBox">
+                <div class="alert alert-info">
+                    已选择文件: <span id="selectedFileName"></span>
+                    <button type="button" class="btn-close float-end" id="removeFile"></button>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary" id="convertBtn" disabled>
+                    转换为DXF
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>使用说明:</h5>
+                <ul class="small">
+                    <li>上传一个DWG格式的CAD文件</li>
+                    <li>点击"转换为DXF"按钮</li>
+                    <li>转换完成后下载DXF文件</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5>注意事项:</h5>
+                <ul class="small">
+                    <li>单个文件大小不超过100MB</li>
+                    <li>转换结果保留7天，请及时下载</li>
+                    <li>转换过程完全在服务器端进行，保证数据安全</li>
+                </ul>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <!-- 添加JS -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const dropZone = document.getElementById('dropZone');
-            const dwgFile = document.getElementById('dwgFile');
-            const selectedFileBox = document.getElementById('selectedFileBox');
-            const selectedFileName = document.getElementById('selectedFileName');
-            const removeFile = document.getElementById('removeFile');
-            const convertBtn = document.getElementById('convertBtn');
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dropZone = document.getElementById('dropZone');
+        const dwgFile = document.getElementById('dwgFile');
+        const selectedFileBox = document.getElementById('selectedFileBox');
+        const selectedFileName = document.getElementById('selectedFileName');
+        const removeFile = document.getElementById('removeFile');
+        const convertBtn = document.getElementById('convertBtn');
 
-            // 点击上传区域时触发文件选择
-            dropZone.addEventListener('click', () => {
-                dwgFile.click();
-            });
+        // 点击上传区域时触发文件选择
+        dropZone.addEventListener('click', () => {
+            dwgFile.click();
+        });
 
-            // 文件拖放功能
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = '#0d6efd';
-                dropZone.style.backgroundColor = '#e9ecef';
-            });
+        // 文件拖放功能
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#0d6efd';
+            dropZone.style.backgroundColor = '#e9ecef';
+        });
 
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.style.borderColor = '#ccc';
-                dropZone.style.backgroundColor = '#f8f9fa';
-            });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#ccc';
+            dropZone.style.backgroundColor = '#f8f9fa';
+        });
 
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = '#ccc';
-                dropZone.style.backgroundColor = '#f8f9fa';
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+            dropZone.style.backgroundColor = '#f8f9fa';
 
-                if (e.dataTransfer.files.length) {
-                    dwgFile.files = e.dataTransfer.files;
-                    updateFileInfo();
-                }
-            });
-
-            // 监听文件选择变化
-            dwgFile.addEventListener('change', updateFileInfo);
-
-            // 移除已选择的文件
-            removeFile.addEventListener('click', () => {
-                dwgFile.value = '';
-                selectedFileBox.classList.add('hidden');
-                convertBtn.disabled = true;
-            });
-
-            // 更新文件信息显示
-            function updateFileInfo() {
-                if (dwgFile.files.length > 0) {
-                    const file = dwgFile.files[0];
-                    
-                    // 检查文件类型
-                    if (!file.name.toLowerCase().endsWith('.dwg')) {
-                        alert('请选择DWG格式的文件');
-                        dwgFile.value = '';
-                        return;
-                    }
-                    
-                    selectedFileName.textContent = file.name;
-                    selectedFileBox.classList.remove('hidden');
-                    convertBtn.disabled = false;
-                } else {
-                    selectedFileBox.classList.add('hidden');
-                    convertBtn.disabled = true;
-                }
+            if (e.dataTransfer.files.length) {
+                dwgFile.files = e.dataTransfer.files;
+                updateFileInfo();
             }
         });
-    </script>
-</body>
-</html> 
+
+        // 监听文件选择变化
+        dwgFile.addEventListener('change', updateFileInfo);
+
+        // 移除已选择的文件
+        removeFile.addEventListener('click', () => {
+            dwgFile.value = '';
+            selectedFileBox.classList.add('hidden');
+            convertBtn.disabled = true;
+        });
+
+        // 更新文件信息显示
+        function updateFileInfo() {
+            if (dwgFile.files.length > 0) {
+                const file = dwgFile.files[0];
+                
+                // 检查文件类型
+                if (!file.name.toLowerCase().endsWith('.dwg')) {
+                    alert('请选择DWG格式的文件');
+                    dwgFile.value = '';
+                    return;
+                }
+                
+                selectedFileName.textContent = file.name;
+                selectedFileBox.classList.remove('hidden');
+                convertBtn.disabled = false;
+            } else {
+                selectedFileBox.classList.add('hidden');
+                convertBtn.disabled = true;
+            }
+        }
+    });
+</script>
+{% endblock %} 

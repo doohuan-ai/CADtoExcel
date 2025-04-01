@@ -18,7 +18,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
             padding: 0 15px;
         }
@@ -48,12 +48,24 @@
             margin-bottom: 20px;
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        /* 统一内容区域宽度 */
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        @media (max-width: 800px) {
+            .content-container {
+                max-width: 100%;
+                padding: 0 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header-wrapper">
-        <div class="container">
+        <div class="container content-container">
             <div class="logo-title">
                 <img src="{{ url_for('static', filename='img/hytems_logo.png') }}" alt="Logo">
                 <h1>华阳通 - 外委工序检验报告系统</h1>
@@ -61,14 +73,12 @@
         </div>
     </div>
 
-    <!-- 试用信息条带 -->
-    <div class="container">
+    <main class="container content-container my-4">
+        <!-- 试用信息条带 -->
         <div id="trial-banner" class="trial-banner">
             试用版 - <span id="trial-remaining">正在检查试用状态...</span>
         </div>
-    </div>
-
-    <main class="container my-4">
+        
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -86,7 +96,7 @@
     </main>
 
     <footer class="bg-light py-4 mt-5">
-        <div class="container">
+        <div class="container content-container">
             <div class="row align-items-center">
                 <div class="col-12 text-center">
                     <p class="mb-0" style="color: #555; font-size: 0.95rem;">
